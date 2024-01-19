@@ -6,24 +6,13 @@ import SignOut from './SignOut';
 import SignUp from './SignUp';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query,where } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, where } from 'firebase/firestore';
 import './App.css';
 
 function App() {
-
   const [habits, setHabits] = useState([]);
   const [user, setUser] = useState(null);
 
-  // useEffect(() => {
-  //   const unsubscribe = onSnapshot(query(collection(db, 'habits')), (snapshot) => {
-      
-  //     setHabits(snapshot.docs.map(doc =>{ 
-  //       const data = doc.data();  
-  //       return { ...data, id: doc.id }}));
-  //   });
-
-  //   return () => unsubscribe(); // Detach the listener when the component unmounts
-  // }, []);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
@@ -40,43 +29,50 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  const addHabit = async (habitText, allowsMultiple) => {
+  const addHabit = async (habitText, allowsMultiple, trackingType) => {
+    // Ensure user is logged in
     if (!user) {
       console.error('No user signed in!');
       return;
     }
 
     const newHabit = {
-      text: habitText, 
-      count: 0, 
-      allowsMultiple, 
-      lastCompletedDate: null, 
+      text: habitText,
+      count: 0,
+      allowsMultiple,
+      lastCompletedDate: null,
       streak: 0,
-      userId: user.uid  // Add the user ID to associate the habit with the user
+      userId: user.uid,
+      trackingType, // 'daily' or 'weekly'
     };
     await addDoc(collection(db, 'habits'), newHabit);
   };
-
 
   const toggleComplete = async (index) => {
     const habit = habits[index];
     const habitRef = doc(db, 'habits', habit.id);
     const today = new Date().toDateString();
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-
+  
     let updatedHabit = { ...habit };
-
-    if (habit.allowsMultiple || habit.count === 0) {
-      updatedHabit.count += 1;
-      updatedHabit.lastCompletedDate = today;
-      updatedHabit.streak = new Date(habit.lastCompletedDate).toDateString() === yesterday.toDateString() ? habit.streak + 1 : 1;
-    } else {
-      updatedHabit.count = 0;
-      updatedHabit.streak = 0;
+  
+    if (habit.trackingType === 'daily') {
+      // Daily tracking logic
+      updatedHabit.count = habit.count === 0 ? 1 : 0;
+    } else if (habit.trackingType === 'weekly') {
+      // Weekly tracking logic
+      // Example: Increment count if it's a new week or reset to 1 if not
+      const lastCompletedWeek = new Date(habit.lastCompletedDate).getWeek();
+      const currentWeek = new Date().getWeek();
+      updatedHabit.count = currentWeek !== lastCompletedWeek ? 1 : habit.count + 1;
     }
-
-    await updateDoc(habitRef, updatedHabit);
+    updatedHabit.lastCompletedDate = today;
+  
+    try {
+      await updateDoc(habitRef, updatedHabit);
+    } catch (error) {
+      // Handle error (e.g., show a message to the user)
+      console.error("Error updating habit: ", error);
+    }
   };
 
   const deleteHabit = async (index) => {
@@ -84,21 +80,51 @@ function App() {
     await deleteDoc(habitRef);
   };
 
+  const incrementCount = async (index) => {
+    const habit = habits[index];
+    const habitRef = doc(db, 'habits', habit.id);
+
+    let updatedHabit = { ...habit, count: habit.count + 1 };
+
+    try {
+      await updateDoc(habitRef, updatedHabit);
+    } catch (error) {
+      console.error("Error updating habit: ", error);
+    }
+  };
+
+  const decrementCount = async (index) => {
+    const habit = habits[index];
+    const habitRef = doc(db, 'habits', habit.id);
+
+    // Prevent count from going below zero
+    if (habit.count > 0) {
+      let updatedHabit = { ...habit, count: habit.count - 1 };
+
+      try {
+        await updateDoc(habitRef, updatedHabit);
+      } catch (error) {
+        console.error("Error updating habit: ", error);
+      }
+    }
+  };
+
   return (
     <div className="App">
       <h1>Habit Tracker</h1>
       {user ? (
         <>
-          {/* User is signed in, show Habit Tracker and Sign Out components */}
           <SignOut />
-          <br />
           <AddHabit addHabit={addHabit} />
-          <br />
-          <HabitList habits={habits} toggleComplete={toggleComplete} deleteHabit={deleteHabit} />
+          <HabitList 
+            habits={habits} 
+            incrementCount={incrementCount} 
+            decrementCount={decrementCount} 
+            deleteHabit={deleteHabit} 
+          />
         </>
       ) : (
         <>
-          {/* No user is signed in, show Sign In and Sign Up components */}
           <SignIn />
           <SignUp />
         </>
@@ -107,5 +133,6 @@ function App() {
   );
 }
 
-
 export default App;
+
+

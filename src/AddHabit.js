@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
 
 function AddHabit({ addHabit }) {
-  const [input, setInput] = useState('');
-  const [allowsMultiple, setAllowsMultiple] = useState(false);
+  const [habitText, setHabitText] = useState('');
+  const [trackingType, setTrackingType] = useState('daily');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addHabit(input, allowsMultiple);
-    setInput('');
-    setAllowsMultiple(false);
+    addHabit(habitText, false, trackingType);
+    setHabitText('');
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input 
-        type="text" 
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <br></br>
-      <label>
-        Allow multiple increments per day:
-        <input
-          type="checkbox"
-          checked={allowsMultiple}
-          onChange={(e) => setAllowsMultiple(e.target.checked)}
+      <div>
+        <label htmlFor="habitInput">Enter a habit to track:</label>
+        <input 
+          id="habitInput"
+          type="text" 
+          placeholder="E.g., Drink water, Exercise" 
+          value={habitText} 
+          onChange={(e) => setHabitText(e.target.value)} 
         />
-      </label>
-      <br></br>
+        <p>Please enter the habit you wish to track in the field above.</p>
+      </div>
+      <select value={trackingType} onChange={(e) => setTrackingType(e.target.value)}>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+      </select>
       <button type="submit">Add Habit</button>
     </form>
   );
