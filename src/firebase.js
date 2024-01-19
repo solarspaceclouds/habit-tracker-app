@@ -6,12 +6,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDuP0gKhF-CEP1zCF3aWt_FTnGGQ6vygJU",
-  authDomain: "habittracker-space.firebaseapp.com",
-  projectId: "habittracker-space",
-  storageBucket: "habittracker-space.appspot.com",
-  messagingSenderId: "790339805382",
-  appId: "1:790339805382:web:f3536f44ec5ceb3f5ab7c7"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECTID,
+  storageBucket: process.env.REACT_APP_STORAGEBUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
+  appId: process.env.REACT_APPID
 };
 
 // Initialize Firebase
