@@ -73,23 +73,30 @@ function App() {
   };
 
   const incrementCount = async (id) => {
-    const habitRef = doc(db, 'habits', id);
-    try {
-      await updateDoc(habitRef, {
-        count: increment(1)  // Use Firestore increment to ensure atomic update
-      });
-    } catch (error) {
-      console.error("Error incrementing habit: ", error);
+    // Find the habit using the provided ID
+    const habitIndex = habits.findIndex(h => h.id === id);
+    if (habitIndex === -1) {
+      console.error("Habit not found");
+      return;
     }
-
+  
+    const habit = habits[habitIndex];
+    const habitRef = doc(db, 'habits', id);
+  
     const updatedHabit = {
       ...habit,
       count: habit.count + 1,
       lastCompletedDate: new Date().toISOString(),
-      streak: updateStreak(habit)
+      streak: updateStreak(habit) // Now 'habit' is defined in this scope
     };
-    
+  
+    try {
+      await updateDoc(habitRef, updatedHabit);
+    } catch (error) {
+      console.error("Error incrementing habit: ", error);
+    }
   };
+  
   
   const decrementCount = async (id) => {
     const habitRef = doc(db, 'habits', id);
