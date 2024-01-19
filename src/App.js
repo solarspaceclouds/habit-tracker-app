@@ -108,10 +108,15 @@ function App() {
     };
   
     try {
-      await updateDoc(habitRef, { completions: updatedCompletions }, updatedHabit);
-    } catch (error) {
+      await updateDoc(habitRef, {
+          completions: updatedCompletions,
+          count: habit.count + 1,
+          lastCompletedDate: new Date().toISOString(),
+          streak: updateStreak(habit, true)
+      });
+  } catch (error) {
       console.error("Error incrementing habit: ", error);
-    }
+  }
   };
   
   
@@ -141,12 +146,13 @@ function App() {
     }
     const habitRef = doc(db, 'habits', id);
     try {
-      await updateDoc(habitRef, { completions: updatedCompletions },{
-        count: increment(-1)  // Decrement but ensure it doesn't go below 0 in Firestore rules or in the UI
+      await updateDoc(habitRef, {
+          completions: updatedCompletions,
+          count: habit.count > 0 ? increment(-1) : 0 // Ensure it doesn't go below 0
       });
-    } catch (error) {
+  } catch (error) {
       console.error("Error decrementing habit: ", error);
-    }
+  }
   };
   
   const deleteHabit = async (id) => {
