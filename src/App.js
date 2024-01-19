@@ -82,43 +82,38 @@ function App() {
   const incrementCount = async (id) => {
     const habitIndex = habits.findIndex(h => h.id === id);
     if (habitIndex === -1) {
-      console.error("Habit not found");
-      return;
+        console.error("Habit not found");
+        return;
     }
-  
+
     const habit = habits[habitIndex];
     const today = new Date().toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
     const habitRef = doc(db, 'habits', id);
 
     let updatedCompletions = [...habit.completions];
     const existingCompletionIndex = updatedCompletions.findIndex(c => c.date === today);
-  
+
     if (existingCompletionIndex >= 0) {
-      updatedCompletions[existingCompletionIndex].count += 1;
+        updatedCompletions[existingCompletionIndex].count += 1;
     } else {
-      updatedCompletions.push({ date: today, count: 1 });
+        updatedCompletions.push({ date: today, count: 1 });
     }
-  
-  
+
     const updatedHabit = {
-      ...habit,
-      count: habit.count + 1,
-      lastCompletedDate: new Date().toISOString(),
-      streak: updateStreak(habit, true) // Pass true to indicate increment
+        ...habit,
+        completions: updatedCompletions,
+        count: habit.count + 1,
+        lastCompletedDate: new Date().toISOString(),
+        streak: updateStreak(habit, true) // Pass true to indicate increment
     };
-  
+
     try {
-      await updateDoc(habitRef, {
-          completions: updatedCompletions,
-          count: habit.count + 1,
-          lastCompletedDate: new Date().toISOString(),
-          streak: updateStreak(habit, true)
-      });
-  } catch (error) {
-      console.error("Error incrementing habit: ", error);
-  }
-  };
-  
+        await updateDoc(habitRef, updatedHabit);
+    } catch (error) {
+        console.error("Error incrementing habit: ", error);
+    }
+};
+
   
   const decrementCount = async (id) => {
     const habitIndex = habits.findIndex(h => h.id === id);
