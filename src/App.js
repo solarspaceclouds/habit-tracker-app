@@ -44,36 +44,37 @@ function App() {
     await addDoc(collection(db, 'habits'), newHabit);
   };
 
-  const updateStreak = (habit) => {
+  const updateStreak = (habit, increment) => {
     const lastCompleted = new Date(habit.lastCompletedDate);
     const today = new Date();
-    let streak = habit.streak;
   
     if (habit.trackingType === 'daily') {
-      if (lastCompleted.toDateString() === new Date(today - 86400000).toDateString()) {
-        // If the habit was last completed yesterday, increment the streak
-        streak++;
-      } else if (lastCompleted.toDateString() !== today.toDateString()) {
-        // If it wasn't completed yesterday and not today, reset streak
-        streak = 0;
+      // Daily tracking logic
+      if (increment && lastCompleted.toDateString() === new Date(today.setDate(today.getDate() - 1)).toDateString()) {
+        return habit.streak + 1;
+      } else if (increment) {
+        return 1; // Reset streak if not consecutive
       }
     } else if (habit.trackingType === 'weekly') {
       // Weekly tracking logic
-      const oneWeekAgo = new Date(today - 7 * 86400000);
-      if (lastCompleted >= oneWeekAgo && lastCompleted < today) {
-        // If the habit was last completed within the past week but not today
-        streak++;
-      } else if (lastCompleted < oneWeekAgo) {
-        // If it wasn't completed within the past week
-        streak = 0;
+      if (increment && getWeekNumber(lastCompleted) === getWeekNumber(new Date(today.setDate(today.getDate() - 7)))) {
+        return habit.streak + 1;
+      } else if (increment) {
+        return 1; // Reset streak if not in the same week
       }
     }
   
-    return streak;
+    return habit.streak; // Return existing streak if no increment
   };
 
+  const getWeekNumber = (date) => {
+    const startOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date - startOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+  };
+  
+
   const incrementCount = async (id) => {
-    // Find the habit using the provided ID
     const habitIndex = habits.findIndex(h => h.id === id);
     if (habitIndex === -1) {
       console.error("Habit not found");
@@ -87,7 +88,7 @@ function App() {
       ...habit,
       count: habit.count + 1,
       lastCompletedDate: new Date().toISOString(),
-      streak: updateStreak(habit) // Now 'habit' is defined in this scope
+      streak: updateStreak(habit, true) // Pass true to indicate increment
     };
   
     try {
