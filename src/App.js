@@ -80,10 +80,22 @@ function App() {
   return (
     <div className="App">
       <h1>Habit Tracker</h1>
-      <br></br>
-      <AddHabit addHabit={addHabit} />
-      <br></br>
-      <HabitList habits={habits} toggleComplete={toggleComplete} deleteHabit={deleteHabit} />
+      {user ? (
+        <>
+          {/* User is signed in, show Habit Tracker and Sign Out components */}
+          <SignOut />
+          <br />
+          <AddHabit addHabit={addHabit} />
+          <br />
+          <HabitList habits={habits} toggleComplete={toggleComplete} deleteHabit={deleteHabit} />
+        </>
+      ) : (
+        <>
+          {/* No user is signed in, show Sign In and Sign Up components */}
+          <SignIn />
+          <SignUp />
+        </>
+      )}
     </div>
   );
 }
