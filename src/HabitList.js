@@ -14,6 +14,7 @@ function HabitList({ habits, incrementCount, decrementCount, deleteHabit }) {
           <th>Habit</th>
           <th>Count</th>
           <th>Streak</th>
+          <th>Habit Start Date</th>
           <th>Actions</th>
         </tr>
       </thead>
