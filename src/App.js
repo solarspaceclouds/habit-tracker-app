@@ -18,7 +18,7 @@ function App() {
       setUser(currentUser);
       if (currentUser) {
         const q = query(collection(db, 'habits'), where('userId', '==', currentUser.uid));
-        return onSnapshot(q, snapshot => {
+        onSnapshot(q, snapshot => {
           setHabits(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
         });
       } else {
@@ -29,83 +29,49 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  const addHabit = async (habitText, allowsMultiple, trackingType) => {
-    // Ensure user is logged in
+  const addHabit = async (habitText, trackingType) => {
     if (!user) {
       console.error('No user signed in!');
       return;
     }
 
     const newHabit = {
-      text: habitText,
-      count: 0,
-      allowsMultiple,
-      lastCompletedDate: null,
-      streak: 0,
-      userId: user.uid,
+      text: habitText, 
+      count: 0, 
       trackingType, // 'daily' or 'weekly'
+      userId: user.uid
     };
     await addDoc(collection(db, 'habits'), newHabit);
   };
 
-  const toggleComplete = async (index) => {
-    const habit = habits[index];
-    const habitRef = doc(db, 'habits', habit.id);
-    const today = new Date().toDateString();
-  
-    let updatedHabit = { ...habit };
-  
-    if (habit.trackingType === 'daily') {
-      // Daily tracking logic
-      updatedHabit.count = habit.count === 0 ? 1 : 0;
-    } else if (habit.trackingType === 'weekly') {
-      // Weekly tracking logic
-      // Example: Increment count if it's a new week or reset to 1 if not
-      const lastCompletedWeek = new Date(habit.lastCompletedDate).getWeek();
-      const currentWeek = new Date().getWeek();
-      updatedHabit.count = currentWeek !== lastCompletedWeek ? 1 : habit.count + 1;
-    }
-    updatedHabit.lastCompletedDate = today;
-  
+  const incrementCount = async (id) => {
+    const habitRef = doc(db, 'habits', id);
     try {
-      await updateDoc(habitRef, updatedHabit);
+      await updateDoc(habitRef, {
+        count: increment(1)  // Use Firestore increment to ensure atomic update
+      });
     } catch (error) {
-      // Handle error (e.g., show a message to the user)
-      console.error("Error updating habit: ", error);
+      console.error("Error incrementing habit: ", error);
     }
   };
-
-  const deleteHabit = async (index) => {
-    const habitRef = doc(db, 'habits', habits[index].id);
-    await deleteDoc(habitRef);
-  };
-
-  const incrementCount = async (index) => {
-    const habit = habits[index];
-    const habitRef = doc(db, 'habits', habit.id);
-
-    let updatedHabit = { ...habit, count: habit.count + 1 };
-
+  
+  const decrementCount = async (id) => {
+    const habitRef = doc(db, 'habits', id);
     try {
-      await updateDoc(habitRef, updatedHabit);
+      await updateDoc(habitRef, {
+        count: increment(-1)  // Decrement but ensure it doesn't go below 0 in Firestore rules or in the UI
+      });
     } catch (error) {
-      console.error("Error updating habit: ", error);
+      console.error("Error decrementing habit: ", error);
     }
   };
-
-  const decrementCount = async (index) => {
-    const habit = habits[index];
-    const habitRef = doc(db, 'habits', habit.id);
-
-    // Prevent count from going below zero
-    if (habit.count > 0) {
-      let updatedHabit = { ...habit, count: habit.count - 1 };
-
-      try {
-        await updateDoc(habitRef, updatedHabit);
-      } catch (error) {
-        console.error("Error updating habit: ", error);
-      }
+  
+  const deleteHabit = async (id) => {
+    const habitRef = doc(db, 'habits', id);
+    try {
+      await deleteDoc(habitRef);
+    } catch (error) {
+      console.error("Error deleting habit: ", error);
     }
   };
 
@@ -134,5 +100,3 @@ function App() {
 }
 
 export default App;
-
-

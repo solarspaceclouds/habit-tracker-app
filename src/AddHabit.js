@@ -6,23 +6,18 @@ function AddHabit({ addHabit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addHabit(habitText, false, trackingType);
+    addHabit(habitText, trackingType);
     setHabitText('');
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="habitInput">Enter a habit to track:</label>
-        <input 
-          id="habitInput"
-          type="text" 
-          placeholder="E.g., Drink water, Exercise" 
-          value={habitText} 
-          onChange={(e) => setHabitText(e.target.value)} 
-        />
-        <p>Please enter the habit you wish to track in the field above.</p>
-      </div>
+      <input 
+        type="text" 
+        placeholder="Add new habit" 
+        value={habitText} 
+        onChange={(e) => setHabitText(e.target.value)} 
+      />
       <select value={trackingType} onChange={(e) => setTrackingType(e.target.value)}>
         <option value="daily">Daily</option>
         <option value="weekly">Weekly</option>

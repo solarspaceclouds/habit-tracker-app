@@ -4,14 +4,13 @@ import Habit from './Habit';
 function HabitList({ habits, incrementCount, decrementCount, deleteHabit }) {
   return (
     <div>
-      {habits.map((habit, index) => (
+      {habits.map((habit) => (
         <Habit 
           key={habit.id} 
           habit={habit} 
-          index={index} 
-          incrementCount={incrementCount} 
-          decrementCount={decrementCount} 
-          deleteHabit={deleteHabit} 
+          incrementCount={() => incrementCount(habit.id)} 
+          decrementCount={() => decrementCount(habit.id)} 
+          deleteHabit={() => deleteHabit(habit.id)} 
         />
       ))}
     </div>
