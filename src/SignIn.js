@@ -13,7 +13,7 @@ function SignIn() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      setError('Failed to sign in: ' + error.message);
+      setError('Failed to sign in. Please check that you have already signed up and have keyed in the correct email and password. );
     }
   };
 
