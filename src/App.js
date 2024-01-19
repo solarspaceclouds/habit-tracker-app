@@ -77,6 +77,7 @@ function App() {
     return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
   };
   
+  
 
   const incrementCount = async (id) => {
     const habitIndex = habits.findIndex(h => h.id === id);
@@ -87,7 +88,8 @@ function App() {
   
     const habit = habits[habitIndex];
     const today = new Date().toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
-  
+    const habitRef = doc(db, 'habits', id);
+
     let updatedCompletions = [...habit.completions];
     const existingCompletionIndex = updatedCompletions.findIndex(c => c.date === today);
   
@@ -97,21 +99,28 @@ function App() {
       updatedCompletions.push({ date: today, count: 1 });
     }
   
-    const habitRef = doc(db, 'habits', id);
+  
+    const updatedHabit = {
+      ...habit,
+      count: habit.count + 1,
+      lastCompletedDate: new Date().toISOString(),
+      streak: updateStreak(habit, true) // Pass true to indicate increment
+    };
+  
     try {
-      await updateDoc(habitRef, { completions: updatedCompletions });
+      await updateDoc(habitRef, { completions: updatedCompletions }, updatedHabit);
     } catch (error) {
       console.error("Error incrementing habit: ", error);
     }
   };
   
-  const decrementCount = async (id) => {
-    const habitIndex = habits.findIndex(h => h.id === id);
-    if (habitIndex === -1) {
-      console.error("Habit not found");
-      return;
-    }
   
+  const decrementCount = async (id) => {
+    // const habitIndex = habits.findIndex(h => h.id === id);
+    // if (habitIndex === -1) {
+    //   console.error("Habit not found");
+    //   return;
+    // }
     const habit = habits[habitIndex];
     const today = new Date().toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
   
@@ -130,15 +139,15 @@ function App() {
         // updatedCompletions.splice(existingCompletionIndex, 1);
       }
     }
-  
     const habitRef = doc(db, 'habits', id);
     try {
-      await updateDoc(habitRef, { completions: updatedCompletions });
+      await updateDoc(habitRef, { completions: updatedCompletions },{
+        count: increment(-1)  // Decrement but ensure it doesn't go below 0 in Firestore rules or in the UI
+      });
     } catch (error) {
       console.error("Error decrementing habit: ", error);
     }
   };
-  
   
   const deleteHabit = async (id) => {
     const habitRef = doc(db, 'habits', id);
