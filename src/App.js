@@ -44,6 +44,34 @@ function App() {
     await addDoc(collection(db, 'habits'), newHabit);
   };
 
+  const updateStreak = (habit) => {
+    const lastCompleted = new Date(habit.lastCompletedDate);
+    const today = new Date();
+    let streak = habit.streak;
+  
+    if (habit.trackingType === 'daily') {
+      if (lastCompleted.toDateString() === new Date(today - 86400000).toDateString()) {
+        // If the habit was last completed yesterday, increment the streak
+        streak++;
+      } else if (lastCompleted.toDateString() !== today.toDateString()) {
+        // If it wasn't completed yesterday and not today, reset streak
+        streak = 0;
+      }
+    } else if (habit.trackingType === 'weekly') {
+      // Weekly tracking logic
+      const oneWeekAgo = new Date(today - 7 * 86400000);
+      if (lastCompleted >= oneWeekAgo && lastCompleted < today) {
+        // If the habit was last completed within the past week but not today
+        streak++;
+      } else if (lastCompleted < oneWeekAgo) {
+        // If it wasn't completed within the past week
+        streak = 0;
+      }
+    }
+  
+    return streak;
+  };
+
   const incrementCount = async (id) => {
     const habitRef = doc(db, 'habits', id);
     try {
@@ -53,6 +81,14 @@ function App() {
     } catch (error) {
       console.error("Error incrementing habit: ", error);
     }
+
+    const updatedHabit = {
+      ...habit,
+      count: habit.count + 1,
+      lastCompletedDate: new Date().toISOString(),
+      streak: updateStreak(habit)
+    };
+    
   };
   
   const decrementCount = async (id) => {
