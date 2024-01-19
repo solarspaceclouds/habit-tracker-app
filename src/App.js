@@ -1,23 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import AddHabit from './AddHabit';
 import HabitList from './HabitList';
-import { db } from './firebase';
-import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query } from 'firebase/firestore';
+import SignIn from './SignIn'; 
+import SignOut from './SignOut'; 
+import SignUp from './SignUp';
+import { auth, db } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query,where } from 'firebase/firestore';
 import './App.css';
 
 function App() {
-  console.log("appwooo")
-  const [habits, setHabits] = useState([]);
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(query(collection(db, 'habits')), (snapshot) => {
+  const [habits, setHabits] = useState([]);
+  const [user, setUser] = useState(null);
+
+  // useEffect(() => {
+  //   const unsubscribe = onSnapshot(query(collection(db, 'habits')), (snapshot) => {
       
-      setHabits(snapshot.docs.map(doc =>{ 
-        const data = doc.data();  
-        return { ...data, id: doc.id }}));
+  //     setHabits(snapshot.docs.map(doc =>{ 
+  //       const data = doc.data();  
+  //       return { ...data, id: doc.id }}));
+  //   });
+
+  //   return () => unsubscribe(); // Detach the listener when the component unmounts
+  // }, []);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+      setUser(currentUser);
+      if (currentUser) {
+        const q = query(collection(db, 'habits'), where('userId', '==', currentUser.uid));
+        return onSnapshot(q, snapshot => {
+          setHabits(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+        });
+      } else {
+        setHabits([]);
+      }
     });
 
-    return () => unsubscribe(); // Detach the listener when the component unmounts
+    return () => unsubscribe();
   }, []);
 
   const addHabit = async (habitText, allowsMultiple) => {
@@ -67,5 +87,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
