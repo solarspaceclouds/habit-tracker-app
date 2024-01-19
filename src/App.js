@@ -127,6 +127,7 @@ function App() {
       <h1>Habit Tracker</h1>
       {user ? (
         <>
+        <div className="content">
           <SignOut />
           <AddHabit addHabit={addHabit} />
           <HabitList 
@@ -137,6 +138,7 @@ function App() {
           />
           <div className="streakChart">
           <StreakChart habits={habits} />
+        </div>
         </div>
         </>
         
