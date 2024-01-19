@@ -41,15 +41,22 @@ function App() {
   }, []);
 
   const addHabit = async (habitText, allowsMultiple) => {
+    if (!user) {
+      console.error('No user signed in!');
+      return;
+    }
+
     const newHabit = {
       text: habitText, 
       count: 0, 
       allowsMultiple, 
       lastCompletedDate: null, 
-      streak: 0
+      streak: 0,
+      userId: user.uid  // Add the user ID to associate the habit with the user
     };
     await addDoc(collection(db, 'habits'), newHabit);
   };
+
 
   const toggleComplete = async (index) => {
     const habit = habits[index];
