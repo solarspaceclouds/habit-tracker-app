@@ -4,6 +4,7 @@ import HabitList from './HabitList';
 import SignIn from './SignIn'; 
 import SignOut from './SignOut'; 
 import SignUp from './SignUp';
+import StreakChart from './StreakChart';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, where, increment } from 'firebase/firestore';
@@ -39,8 +40,10 @@ function App() {
       text: habitText, 
       count: 0, 
       trackingType, // 'daily' or 'weekly'
-      userId: user.uid
+      userId: user.uid,
+      createdDate: new Date().toISOString() // Add creation date
     };
+
     await addDoc(collection(db, 'habits'), newHabit);
   };
 
@@ -132,7 +135,11 @@ function App() {
             decrementCount={decrementCount} 
             deleteHabit={deleteHabit} 
           />
+          <div className="streakChart">
+          <StreakChart habits={habits} />
+        </div>
         </>
+        
       ) : (
         <>
           <SignIn />

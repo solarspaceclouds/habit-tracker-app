@@ -1,0 +1,25 @@
+.habitListContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .legend {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+  }
+  
+  .legend .daily {
+    color: lightblue;
+  }
+  
+  .legend .weekly {
+    color: lightgreen;
+  }
+  
+  .habitTable {
+    width: 50%;
+  }
+  
+  /* Additional styling */
+  
