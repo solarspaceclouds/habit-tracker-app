@@ -116,11 +116,11 @@ function App() {
   
   
   const decrementCount = async (id) => {
-    // const habitIndex = habits.findIndex(h => h.id === id);
-    // if (habitIndex === -1) {
-    //   console.error("Habit not found");
-    //   return;
-    // }
+    const habitIndex = habits.findIndex(h => h.id === id);
+    if (habitIndex === -1) {
+      console.error("Habit not found");
+      return;
+    }
     const habit = habits[habitIndex];
     const today = new Date().toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
   
