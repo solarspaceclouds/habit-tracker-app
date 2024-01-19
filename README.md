@@ -16,5 +16,6 @@ Habit Tracker Website: https://master--lucky-meringue-666cc2.netlify.app/
 
 ## Implementation 
 Frontend: React framework, hosted on Netlify
+
 Backend: Firebase
 
