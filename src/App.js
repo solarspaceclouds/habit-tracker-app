@@ -187,16 +187,20 @@ function App() {
 
       {user && (
         <div className="content">
-          <HabitList 
-            habits={habits} 
-            incrementCount={incrementCount} 
-            decrementCount={decrementCount} 
-            deleteHabit={deleteHabit} 
-          />
-          <div className="streakChart">
-            <StreakChart habits={habits} />
-          </div>
+        <div className="habitListContainer">
+        <HabitList 
+                    habits={habits} 
+                    incrementCount={incrementCount} 
+                    decrementCount={decrementCount} 
+                    deleteHabit={deleteHabit} 
+                  />
         </div>
+        <div className="streakChart">
+          <StreakChart habits={habits} />
+        </div>
+        </div>
+
+
       )}
     </div>
   );

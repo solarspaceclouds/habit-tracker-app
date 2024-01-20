@@ -12,6 +12,15 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .habitListContainer, .streakChart {
+    width: 100%;
+  }
+}
 
 .App-header {
   background-color: #282c34;
@@ -42,6 +51,10 @@
   justify-content: space-between;
 }
 
-.habitListContainer, .streakChart {
-  width: 48%;
+.habitListContainer { /* Adjust this class name based on your actual implementation */
+  width: 50%;
+}
+
+.streakChart { /* Adjust this class name based on your actual implementation */
+  width: 50%;
 }

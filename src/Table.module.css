@@ -1,23 +1,22 @@
 table {
-    width: flex;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    border: 1px solid #a9c5db;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  th {
-    background-color: #b9dfd1;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #cbc4e8;
-  }
-  
-  button {
-    margin-right: 5px;
-  }
-  
+  width: 100%; /* Fill the container */
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #a9c5db;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #b9dfd1;
+}
+
+tr:nth-child(even) {
+  background-color: #cbc4e8;
+}
+
+button {
+  margin-right: 5px;
+}
