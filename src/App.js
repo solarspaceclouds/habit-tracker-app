@@ -183,9 +183,10 @@ function App() {
     <div className="App">
       <h1>Habit Tracker</h1>
       <SignOut />
-      <AddHabit addHabit={addHabit} />
+      
       {user ? (
        <>
+       <AddHabit addHabit={addHabit} />
        <div className="content">
           
           <HabitList 
