@@ -181,12 +181,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Habit Tracker</h1>
-      {user ? <SignOut /> : <>
-        <SignIn />
-        <SignUp />
-      </>}
-  
+      <h1>Habit Tracker</h1>  
       {user ? (
         <>
           <AddHabit addHabit={addHabit} />
@@ -203,8 +198,12 @@ function App() {
               <StreakChart habits={habits} />
             </div>
           </div>
+          <SignOut />
         </>
-      ) : null}
+      ) :<>
+      <SignIn />
+      <SignUp />
+    </>}
     </div>
   );
   
