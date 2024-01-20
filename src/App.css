@@ -37,3 +37,11 @@
   }
 }
 
+.content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.habitTable, .streakChart {
+  width: 48%; /* Adjust based on your layout preference */
+}
