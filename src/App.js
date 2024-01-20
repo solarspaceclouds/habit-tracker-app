@@ -16,7 +16,8 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
-      setUser(currentUser);
+      // setUser(currentUser);
+      setUser(true);
       if (currentUser) {
         const q = query(collection(db, 'habits'), where('userId', '==', currentUser.uid));
         onSnapshot(q, snapshot => {
