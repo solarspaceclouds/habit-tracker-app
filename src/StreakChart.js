@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function StreakChart({ habits }) {
   const [view, setView] = useState('daily'); // 'daily' or 'weekly'
@@ -11,30 +11,20 @@ function StreakChart({ habits }) {
     const filterType = view === 'daily' ? 'daily' : 'weekly';
     const filteredHabits = habits.filter(habit => habit.trackingType === filterType);
 
-    // Assuming that habits have an array of {date, count} for each completion
-    const dataPoints = filteredHabits.map(habit => {
-      return {
-        label: habit.text,
-        data: habit.completions.map(completion => ({ t: new Date(completion.date), y: completion.count })),
-        fill: false,
-        borderColor: filterType === 'daily' ? 'rgba(54, 162, 235)' : 'rgba(255, 206, 86)',
-        tension: 0.1
-      };
-    });
-
     return {
-      datasets: dataPoints
+      labels: filteredHabits.map(habit => habit.text),
+      datasets: [
+        {
+          label: `${filterType.charAt(0).toUpperCase() + filterType.slice(1)} Streaks`,
+          data: filteredHabits.map(habit => habit.streak),
+          backgroundColor: filterType === 'daily' ? 'rgba(54, 162, 235, 0.5)' : 'rgba(255, 206, 86, 0.5)',
+        }
+      ]
     };
   }, [habits, view]);
 
   const options = {
     scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: view === 'daily' ? 'day' : 'week'
-        }
-      },
       y: {
         beginAtZero: true
       }
@@ -46,7 +36,7 @@ function StreakChart({ habits }) {
       },
       title: {
         display: true,
-        text: 'Habit Completion Trends',
+        text: 'Habit Streaks',
       },
     },
   };
@@ -57,7 +47,7 @@ function StreakChart({ habits }) {
         <button onClick={() => setView('daily')}>Daily</button>
         <button onClick={() => setView('weekly')}>Weekly</button>
       </div>
-      <Line data={chartData} options={options} />
+      <Bar data={chartData} options={options} />
     </div>
   );
 }

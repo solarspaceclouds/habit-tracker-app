@@ -8,7 +8,6 @@ function Habit({ habit, incrementCount, decrementCount, deleteHabit }) {
       <td>{habit.text}</td>
       <td>{habit.count}</td>
       <td>{habit.streak}</td>
-      <td>{new Date(habit.createdDate).toLocaleDateString()}</td>
       <td>
         <button onClick={incrementCount}>+</button>
         <button onClick={decrementCount} disabled={habit.count === 0}>-</button>

@@ -3,11 +3,6 @@ import Habit from './Habit';
 
 function HabitList({ habits, incrementCount, decrementCount, deleteHabit }) {
   return (
-    <div className="habitListContainer">
-    <div className="legend">
-      <span className="daily">Daily Habit</span>
-      <span className="weekly">Weekly Habit</span>
-    </div>
     <table>
       <thead>
         <tr>
@@ -30,7 +25,6 @@ function HabitList({ habits, incrementCount, decrementCount, deleteHabit }) {
         ))}
       </tbody>
     </table>
-    </div>
   );
 }
 
