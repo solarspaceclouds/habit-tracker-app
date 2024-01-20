@@ -100,7 +100,6 @@ function App() {
     const today = new Date().toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
     const habitRef = doc(db, 'habits', id);
    
-    await updateDoc(habitRef, updatedHabitData);
     let updatedCompletions = [...habit.completions];
     const existingCompletionIndex = updatedCompletions.findIndex(c => c.date === today);
 
