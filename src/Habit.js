@@ -1,7 +1,7 @@
 import React from 'react';
 
 function Habit({ habit, incrementCount, decrementCount, deleteHabit }) {
-  const panelColor = habit.trackingType === 'daily' ? 'lightblue' : 'lightgreen';
+  const panelColor = habit.trackingType === 'daily' ? 'rgba(54, 162, 235, 0.5)' : 'rgba(255, 206, 86, 0.5)';
 
   return (
     <tr style={{ backgroundColor: panelColor }}>
