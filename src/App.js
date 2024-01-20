@@ -185,7 +185,7 @@ function App() {
       <SignOut />
 
       {user ? (
-        <>
+          <>
           <AddHabit addHabit={addHabit} />
           <div className="content">
             <HabitList 
@@ -199,6 +199,7 @@ function App() {
             </div>
           </div>
         </>
+
       ) : (
         <>
           <SignIn />
