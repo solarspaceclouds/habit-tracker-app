@@ -191,14 +191,12 @@ function App() {
         <>
           <AddHabit addHabit={addHabit} />
           <div className="content">
-            <div className="habitListContainer">
               <HabitList 
                 habits={habits} 
                 incrementCount={incrementCount} 
                 decrementCount={decrementCount} 
                 deleteHabit={deleteHabit} 
               />
-            </div>
             <div className="streakChart">
               <StreakChart habits={habits} />
             </div>
