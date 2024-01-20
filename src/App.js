@@ -16,8 +16,7 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
-      // setUser(currentUser);
-      setUser(true);
+      setUser(currentUser);
       if (currentUser) {
         const q = query(collection(db, 'habits'), where('userId', '==', currentUser.uid));
         onSnapshot(q, snapshot => {
@@ -165,9 +164,8 @@ function App() {
       <h1>Habit Tracker</h1>
       <SignOut />
       {user ? (
-        <>
-        <div className="content">
-          
+       <>
+       <div className="content">
           <AddHabit addHabit={addHabit} />
           <HabitList 
             habits={habits} 
@@ -180,7 +178,6 @@ function App() {
         </div>
         </div>
         </>
-        
       ) : (
         <>
           <SignIn />
