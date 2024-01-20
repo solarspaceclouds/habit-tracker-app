@@ -1,6 +1,5 @@
 import React from 'react';
 import Habit from './Habit';
-import './HabitList.css';
 
 function HabitList({ habits, incrementCount, decrementCount, deleteHabit }) {
   return (
