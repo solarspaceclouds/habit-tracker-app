@@ -4,7 +4,7 @@ import './HabitList.css';
 
 function HabitList({ habits, incrementCount, decrementCount, deleteHabit }) {
   return (
-    <div className="habitListContainer">
+    <div className="habitTable">  
     <div className="legend">
       <span className="daily">Daily/</span>
       <span className="weekly">Weekly Habits</span>
