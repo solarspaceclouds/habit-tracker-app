@@ -5,8 +5,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend);
 
 function StreakChart({ habits }) {
-  const [view, setView] = useState('daily'); // 'daily' or 'weekly'
-
+  const [view, setView] = useState('daily');
   const chartData = useMemo(() => {
     const filterType = view === 'daily' ? 'daily' : 'weekly';
     const filteredHabits = habits.filter(habit => habit.trackingType === filterType);

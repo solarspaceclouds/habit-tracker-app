@@ -7,7 +7,7 @@ import SignUp from './SignUp';
 import StreakChart from './StreakChart';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, where, increment } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, where } from 'firebase/firestore';
 import './App.css';
 
 function App() {
@@ -19,28 +19,18 @@ function App() {
       setUser(currentUser);
       if (currentUser) {
         const q = query(collection(db, 'habits'), where('userId', '==', currentUser.uid));
-        // onSnapshot(q, snapshot => {
-        //   setHabits(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-        // });
         onSnapshot(q, snapshot => {
-          const fetchedHabits = snapshot.docs.map(doc => {
-            const habitData = doc.data();
-            return {
-              ...habitData,
-              id: doc.id,
-              completions: habitData.completions || [] // Ensure completions array exists
-            };
-          });
+          const fetchedHabits = snapshot.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id
+          }));
           setHabits(fetchedHabits);
         });
       } else {
         setHabits([]);
       }
     });
-
     return () => unsubscribe();
-
-    
   }, []);
 
   const addHabit = async (habitText, trackingType) => {
@@ -182,30 +172,21 @@ function App() {
   return (
     <div className="App">
       <h1>Habit Tracker</h1>
-      <SignOut />
+      {user ? <SignOut /> : <><SignIn /><SignUp /></>}
       <AddHabit addHabit={addHabit} />
 
-      {user ? (
-          <>
-          
-          <div className="content">
-            <HabitList 
-              habits={habits} 
-              incrementCount={incrementCount} 
-              decrementCount={decrementCount} 
-              deleteHabit={deleteHabit} 
-            />
-            <div className="streakChart">
-              <StreakChart habits={habits} />
-            </div>
+      {user && (
+        <div className="content">
+          <HabitList 
+            habits={habits} 
+            incrementCount={incrementCount} 
+            decrementCount={decrementCount} 
+            deleteHabit={deleteHabit} 
+          />
+          <div className="streakChart">
+            <StreakChart habits={habits} />
           </div>
-        </>
-
-      ) : (
-        <>
-          <SignIn />
-          <SignUp />
-        </>
+        </div>
       )}
     </div>
   );

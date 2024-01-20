@@ -14,7 +14,7 @@ function HabitList({ habits, incrementCount, decrementCount, deleteHabit }) {
         </tr>
       </thead>
       <tbody>
-        {habits.map((habit, index) => (
+        {habits.map((habit) => (
           <Habit 
             key={habit.id} 
             habit={habit} 

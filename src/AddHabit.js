@@ -6,8 +6,10 @@ function AddHabit({ addHabit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addHabit(habitText, trackingType);
-    setHabitText('');
+    if(habitText.trim() !== '') {
+      addHabit(habitText, trackingType);
+      setHabitText('');
+    }
   };
 
   return (
