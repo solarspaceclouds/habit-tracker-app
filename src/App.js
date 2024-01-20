@@ -183,21 +183,21 @@ function App() {
     <div className="App">
       <h1>Habit Tracker</h1>
       <SignOut />
-      
+
       {user ? (
-       <><AddHabit addHabit={addHabit} />
-       <div className="content">
-          
-          <HabitList 
-            habits={habits} 
-            incrementCount={incrementCount} 
-            decrementCount={decrementCount} 
-            deleteHabit={deleteHabit} 
-          />
-          <div className="streakChart">
-          <StreakChart habits={habits} />
-        </div>
-        </div>
+        <>
+          <AddHabit addHabit={addHabit} />
+          <div className="content">
+            <HabitList 
+              habits={habits} 
+              incrementCount={incrementCount} 
+              decrementCount={decrementCount} 
+              deleteHabit={deleteHabit} 
+            />
+            <div className="streakChart">
+              <StreakChart habits={habits} />
+            </div>
+          </div>
         </>
       ) : (
         <>
