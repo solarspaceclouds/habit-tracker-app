@@ -19,18 +19,28 @@ function App() {
       setUser(currentUser);
       if (currentUser) {
         const q = query(collection(db, 'habits'), where('userId', '==', currentUser.uid));
+        // onSnapshot(q, snapshot => {
+        //   setHabits(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+        // });
         onSnapshot(q, snapshot => {
-          const fetchedHabits = snapshot.docs.map(doc => ({
-            ...doc.data(),
-            id: doc.id
-          }));
+          const fetchedHabits = snapshot.docs.map(doc => {
+            const habitData = doc.data();
+            return {
+              ...habitData,
+              id: doc.id,
+              completions: habitData.completions || [] // Ensure completions array exists
+            };
+          });
           setHabits(fetchedHabits);
         });
       } else {
         setHabits([]);
       }
     });
+
     return () => unsubscribe();
+
+    
   }, []);
 
   const addHabit = async (habitText, trackingType) => {
@@ -39,11 +49,11 @@ function App() {
       return;
     }
     const newHabit = {
-      text: habitText,
+      text: habitText, 
+      count: 0, 
       trackingType,
       userId: user.uid,
-      createdDate: new Date().toISOString(),
-      completions: [] // Initialize completions array
+      createdDate: new Date().toISOString() // Add creation date
     };
   
     // const newHabit = {
@@ -99,7 +109,7 @@ function App() {
     const habit = habits[habitIndex];
     const today = new Date().toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
     const habitRef = doc(db, 'habits', id);
-   
+
     let updatedCompletions = [...habit.completions];
     const existingCompletionIndex = updatedCompletions.findIndex(c => c.date === today);
 
@@ -169,7 +179,7 @@ function App() {
     }
   };
 
-  return (
+   return (
     <div className="App">
       <h1>Habit Tracker</h1>
       {user ? <SignOut /> : <><SignIn /><SignUp /></>}
