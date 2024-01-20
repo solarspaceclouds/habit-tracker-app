@@ -3,7 +3,7 @@ import Habit from './Habit';
 
 function HabitList({ habits, incrementCount, decrementCount, deleteHabit }) {
   return (
-    <table>
+    <table className="habitTable">
       <thead>
         <tr>
           <th>Habit</th>
