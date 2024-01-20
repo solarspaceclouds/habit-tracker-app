@@ -179,31 +179,35 @@ function App() {
     }
   };
 
-   return (
+  return (
     <div className="App">
       <h1>Habit Tracker</h1>
-      {user ? <SignOut /> : <><SignIn /><SignUp /></>}
-      <AddHabit addHabit={addHabit} />
-
-      {user && (
-        <div className="content">
-        <div className="habitListContainer">
-        <HabitList 
-                    habits={habits} 
-                    incrementCount={incrementCount} 
-                    decrementCount={decrementCount} 
-                    deleteHabit={deleteHabit} 
-                  />
-        </div>
-        <div className="streakChart">
-          <StreakChart habits={habits} />
-        </div>
-        </div>
-
-
-      )}
+      {user ? <SignOut /> : <>
+        <SignIn />
+        <SignUp />
+      </>}
+  
+      {user ? (
+        <>
+          <AddHabit addHabit={addHabit} />
+          <div className="content">
+            <div className="habitListContainer">
+              <HabitList 
+                habits={habits} 
+                incrementCount={incrementCount} 
+                decrementCount={decrementCount} 
+                deleteHabit={deleteHabit} 
+              />
+            </div>
+            <div className="streakChart">
+              <StreakChart habits={habits} />
+            </div>
+          </div>
+        </>
+      ) : null}
     </div>
   );
+  
 }
 
 export default App;
