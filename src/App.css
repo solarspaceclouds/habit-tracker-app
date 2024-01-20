@@ -51,9 +51,7 @@
   justify-content: space-between;
 }
 
-.habitListContainer { /* Adjust this class name based on your actual implementation */
-  width: 50%;
-}
+
 
 .streakChart { /* Adjust this class name based on your actual implementation */
   width: 50%;
