@@ -19,8 +19,19 @@ function App() {
       setUser(currentUser);
       if (currentUser) {
         const q = query(collection(db, 'habits'), where('userId', '==', currentUser.uid));
+        // onSnapshot(q, snapshot => {
+        //   setHabits(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+        // });
         onSnapshot(q, snapshot => {
-          setHabits(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+          const fetchedHabits = snapshot.docs.map(doc => {
+            const habitData = doc.data();
+            return {
+              ...habitData,
+              id: doc.id,
+              completions: habitData.completions || [] // Ensure completions array exists
+            };
+          });
+          setHabits(fetchedHabits);
         });
       } else {
         setHabits([]);
@@ -28,6 +39,8 @@ function App() {
     });
 
     return () => unsubscribe();
+
+    
   }, []);
 
   const addHabit = async (habitText, trackingType) => {
@@ -35,15 +48,22 @@ function App() {
       console.error('No user signed in!');
       return;
     }
-
     const newHabit = {
-      text: habitText, 
-      count: 0, 
-      trackingType, // 'daily' or 'weekly'
+      text: habitText,
+      trackingType,
       userId: user.uid,
-      createdDate: new Date().toISOString(), // Add creation date
-      completions: []
+      createdDate: new Date().toISOString(),
+      completions: [] // Initialize completions array
     };
+  
+    // const newHabit = {
+    //   text: habitText, 
+    //   count: 0, 
+    //   trackingType, // 'daily' or 'weekly'
+    //   userId: user.uid,
+    //   createdDate: new Date().toISOString(), // Add creation date
+    //   completions: []
+    // };
 
     await addDoc(collection(db, 'habits'), newHabit);
   };
@@ -163,10 +183,11 @@ function App() {
     <div className="App">
       <h1>Habit Tracker</h1>
       <SignOut />
+      <AddHabit addHabit={addHabit} />
       {user ? (
        <>
        <div className="content">
-          <AddHabit addHabit={addHabit} />
+          
           <HabitList 
             habits={habits} 
             incrementCount={incrementCount} 
