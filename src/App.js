@@ -7,7 +7,7 @@ import SignUp from './SignUp';
 import StreakChart from './StreakChart';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, where, increment } from 'firebase/firestore';
 import './App.css';
 
 function App() {
