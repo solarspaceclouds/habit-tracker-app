@@ -184,6 +184,7 @@ function App() {
       <h1>Habit Tracker</h1>  
       {user ? (
         <>
+        <div>
           <AddHabit addHabit={addHabit} />
           <div className="content">
           <div className="habitListContainer">
@@ -199,6 +200,7 @@ function App() {
             </div>
           </div>
           <SignOut />
+          </div>
         </>
       ) :<>
       <SignIn />
